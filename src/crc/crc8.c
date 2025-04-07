@@ -103,6 +103,12 @@ void crc8_update(crc8_ctx_t* ctx, const uint8_t* buf, uint32_t len) {
         }
     }
 
+    ctx->init = crc;
+}
+
+uint8_t crc8_final(crc8_ctx_t* ctx) {
+    uint8_t crc = ctx->init;
+
     // Reverse output bits if required by the model
     if (ctx->ref_out) {
         crc = reverse_bits(crc);
@@ -110,9 +116,7 @@ void crc8_update(crc8_ctx_t* ctx, const uint8_t* buf, uint32_t len) {
 
     // Apply the final XOR value and store the result back in the context
     ctx->init = crc ^ ctx->xor_out;
-}
 
-uint8_t crc8_final(crc8_ctx_t* ctx) {
     return ctx->init; // Return the final CRC value stored in the context
 }
 

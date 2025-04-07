@@ -287,6 +287,72 @@ TEST(CRC32LookupTest, LookupPackAndVerify) {
     }
 }
 
+TEST(CRC8Test, StepByStepCalculate) {
+    uint8_t data[] = {0x31, 0x32, 0x33, 0x34, 0x35}; // "12345"
+    crc8_ctx_t ctx;
+    crc8_init(&ctx, CRC8_MODEL);
+    // 分步处理数据
+    crc8_update(&ctx, data, 2);     // 处理前2字节
+    crc8_update(&ctx, data + 2, 3); // 处理剩余3字节
+    uint8_t result = crc8_final(&ctx);
+    EXPECT_EQ(result, 0xCB); // 验证与一次性计算结果一致
+}
+
+TEST(CRC8LookupTest, StepByStepCalculate) {
+    uint8_t data[] = {0x31, 0x32, 0x33, 0x34, 0x35}; // "12345"
+    crc8_lookup_ctx_t ctx;
+    crc8_lookup_init(&ctx, CRC8_LOOKUP_MODEL);
+    // 分步处理数据
+    crc8_lookup_update(&ctx, data, 2);     // 处理前2字节
+    crc8_lookup_update(&ctx, data + 2, 3); // 处理剩余3字节
+    uint8_t result = crc8_lookup_final(&ctx);
+    EXPECT_EQ(result, 0xCB); // 验证与一次性计算结果一致
+}
+
+TEST(CRC16Test, StepByStepCalculate) {
+    uint8_t data[] = {0x31, 0x32, 0x33, 0x34, 0x35};
+    crc16_ctx_t ctx;
+    crc16_init(&ctx, CRC16_CCITT_MODEL);
+    // 分步处理
+    crc16_update(&ctx, data, 2);     // 前2字节
+    crc16_update(&ctx, data + 2, 3); // 后3字节
+    uint16_t result = crc16_final(&ctx);
+    EXPECT_EQ(result, 0x7437); // CCITT模型预期结果
+}
+
+TEST(CRC16LookupTest, StepByStepCalculate) {
+    uint8_t data[] = {0x31, 0x32, 0x33, 0x34, 0x35}; // "12345"
+    crc16_lookup_ctx_t ctx;
+    crc16_lookup_init(&ctx, CRC16_CCITT_LOOKUP_MODEL);
+    // 分步处理数据
+    crc16_lookup_update(&ctx, data, 2);     // 处理前2字节
+    crc16_lookup_update(&ctx, data + 2, 3); // 处理剩余3字节
+    uint16_t result = crc16_lookup_final(&ctx);
+    EXPECT_EQ(result, 0x7437); // 验证与一次性计算结果一致
+}
+
+TEST(CRC32Test, StepByStepCalculate) {
+    uint8_t data[] = {0x31, 0x32, 0x33, 0x34, 0x35};
+    crc32_ctx_t ctx;
+    crc32_init(&ctx, CRC32_MODEL);
+    // 分步处理
+    crc32_update(&ctx, data, 2);     // 前2字节
+    crc32_update(&ctx, data + 2, 3); // 后3字节
+    uint32_t result = crc32_final(&ctx);
+    EXPECT_EQ(result, 0xCBF53A1C); // 验证结果
+}
+
+TEST(CRC32LookupTest, StepByStepCalculate) {
+    uint8_t data[] = {0x31, 0x32, 0x33, 0x34, 0x35};
+    crc32_lookup_ctx_t ctx;
+    crc32_lookup_init(&ctx, CRC32_LOOKUP_MODEL);
+    // 分步处理
+    crc32_lookup_update(&ctx, data, 2);     // 前2字节
+    crc32_lookup_update(&ctx, data + 2, 3); // 后3字节
+    uint32_t result = crc32_lookup_final(&ctx);
+    EXPECT_EQ(result, 0xCBF53A1C); // 验证结果
+}
+
 /* Private functions -------------------------------------------------------- */
 
 /* ----------------------------- end of file -------------------------------- */

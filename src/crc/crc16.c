@@ -144,14 +144,18 @@ void crc16_update(crc16_ctx_t* ctx, const uint8_t* buf, uint32_t len) {
         }
     }
 
+    ctx->init = crc;
+}
+
+uint16_t crc16_final(crc16_ctx_t* ctx) {
+    uint16_t crc = ctx->init;
+
     if (ctx->ref_out) {
         crc = reverse_bits_16(crc);
     }
 
     ctx->init = crc ^ ctx->xor_out;
-}
 
-uint16_t crc16_final(crc16_ctx_t* ctx) {
     return ctx->init;
 }
 

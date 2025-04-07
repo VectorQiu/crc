@@ -91,14 +91,18 @@ void crc32_update(crc32_ctx_t* ctx, const uint8_t* buf, uint32_t len) {
         }
     }
 
+    ctx->init = crc;
+}
+
+uint32_t crc32_final(crc32_ctx_t* ctx) {
+    uint32_t crc = ctx->init;
+
     if (ctx->ref_out) {
         crc = reverse_bits_32(crc);
     }
 
     ctx->init = crc ^ ctx->xor_out;
-}
 
-uint32_t crc32_final(crc32_ctx_t* ctx) {
     return ctx->init;
 }
 

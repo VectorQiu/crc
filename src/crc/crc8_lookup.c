@@ -145,15 +145,19 @@ void crc8_lookup_update(crc8_lookup_ctx_t* ctx, const uint8_t* buf,
         // - ^ (crc << 4): XOR the table value with the left-shifted CRC value
     }
 
+    ctx->init = crc;
+}
+
+uint8_t crc8_lookup_final(crc8_lookup_ctx_t* ctx) {
+    uint8_t crc = ctx->init;
+
     // Reverse output bits if required by the model
     if (ctx->ref_out) {
         crc = reverse_bits(crc);
     }
 
     ctx->init = crc ^ ctx->xor_out;
-}
 
-uint8_t crc8_lookup_final(crc8_lookup_ctx_t* ctx) {
     return ctx->init; // Return the final CRC value stored in the context
 }
 

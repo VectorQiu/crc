@@ -129,15 +129,19 @@ void crc32_lookup_update(crc32_lookup_ctx_t* ctx, const uint8_t* buf,
         // - ^ (crc << 4): XOR the table value with the left-shifted CRC value
     }
 
+    ctx->init = crc;
+}
+
+uint32_t crc32_lookup_final(crc32_lookup_ctx_t* ctx) {
+    uint32_t crc = ctx->init;
+
     // Reverse output bits if required by the model
     if (ctx->ref_out) {
         crc = reverse_bits_32(crc);
     }
 
     ctx->init = crc ^ ctx->xor_out;
-}
 
-uint32_t crc32_lookup_final(crc32_lookup_ctx_t* ctx) {
     return ctx->init;
 }
 
